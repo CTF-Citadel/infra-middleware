@@ -6,6 +6,10 @@ import zipfile
 from contextlib import asynccontextmanager
 import config
 
+description = """
+This Application handles container & instance creation for the CTF Citadel Platform
+"""
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     #downlaod tarball
@@ -26,21 +30,25 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan,
+    title="CTF Citadel Infra Controller",
+    version="0.0.2",
+    description=description
+              )
 
 
-@app.get("/")
+@app.get("/",tags=["misc"])
 async def root():
     return {"message": "Hello Hacker"}
 
-@app.post("/container")
-async def spawn_challenge(compose_file: str, environment_variables: dict):
+@app.post("/container",tags=['containers'])
+async def spawn_challenge(compose_file: str, environment_variables: str):
     """
         This function can be used to spawn new containers according to a specified compose file
     """
     return composer.spawn_challenge(compose_file, environment_variables)
 
-@app.get("/container")
+@app.get("/container",tags=['containers'])
 async def container_details(container_id: str):
     """
         This endpoint returns infos about a specified container. Such as environment variables
