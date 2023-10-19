@@ -1,7 +1,32 @@
 from fastapi import FastAPI
 import composer
+import aiohttp
+import asyncio
+import zipfile
+from contextlib import asynccontextmanager
+import config
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    #downlaod tarball
+    async with aiohttp.ClientSession() as session:
+        async with session.get(config.challenge_repo_tarball) as response:
+            if response.status == 200:
+                with open('challenges/challenges.zip',mode='wb') as file:
+                    while True:
+                        chunk = await response.content.read(1024)
+                        if not chunk:
+                            break
+                        file.write(chunk)
+    #unzip downloaded challenges
+    with zipfile.ZipFile('challenges/challenges.zip','r') as zip_ref:
+        print("grr")
+        zip_ref.extractall('challenges/')
+
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
