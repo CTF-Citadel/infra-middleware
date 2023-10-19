@@ -54,7 +54,11 @@ async def spawn_challenge(compose_file: str, environment_variables: str):
 async def container_details(container_id: str):
     """
         This endpoint returns infos about a specified container. Such as environment variables
+        WIP: Currently just returning the name
     """
+    docker_client = docker.from_env()
+    container = docker_client.containers.get(container_id)
+    return container.name
 
 @app.get("/containers",tags=['containers'])
 async def container_details():
