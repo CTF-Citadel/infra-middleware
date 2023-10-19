@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 import composer
+import docker
+import json
 import aiohttp
 import asyncio
 import zipfile
@@ -53,3 +55,14 @@ async def container_details(container_id: str):
     """
         This endpoint returns infos about a specified container. Such as environment variables
     """
+
+@app.get("/containers",tags=['containers'])
+async def container_details():
+    """
+        This endpoint returns a list of all containers
+    """
+    docker_client = docker.from_env()
+    list_of_containers = []
+    for container in docker_client.containers.list():
+        list_of_containers.append(container.id)
+    return list_of_containers
