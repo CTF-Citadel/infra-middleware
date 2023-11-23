@@ -2,7 +2,9 @@ import subprocess
 import uuid
 import os
 import shutil
+import json
 import helper
+import socket
 def spawn_challenge(challenge, environment_variables=None):
     """
     Spawn a new instance of a challenge.
@@ -13,16 +15,22 @@ def spawn_challenge(challenge, environment_variables=None):
     instance_id = str(uuid.uuid4())
     path_to_compose_file = "challenges/" + challenge
     #copy compose file to instance folder
-    os.makedirs("instances/" + instance_id)
-    shutil.copy(path_to_compose_file, "instances/" + instance_id + "/docker-compose.yml")
+    shutil.copytree(path_to_compose_file, "instances/" + instance_id)
 
     #create instance network
     #subprocess.run(["docker", "network", "create", instance_id])
     #generate a random unique network port for the web app
-    #port = helper.get_port()
-    #environment_variables["PORT"] = str(port)
-    if environment_variables is not None:
-        print(environment_variables)
-        environment_variables = dict(environment_variables)
+    environment_variables = json.loads(environment_variables)
+    port = helper.get_port()
+    environment_variables["PORT"] = str(port)
     print(environment_variables)
-    return subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "up","-d"], env=environment_variables)
+    #build a response that returns instance id, challenge and all env vars
+
+    subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "up","-d"], env=environment_variables)
+    environment_variables["IP"] = str(socket.gethostbyname(socket.gethostname()))
+    response = {
+        "instance_id": instance_id,
+        "challenge": challenge,
+        "details": environment_variables
+    }
+    return response
