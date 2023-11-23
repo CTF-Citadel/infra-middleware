@@ -12,25 +12,28 @@ def spawn_challenge(challenge, environment_variables=None):
     :param environment_variables: provide the environment variables for the docker-compose file as dictionary.
     :return: output of detached compose command
     """
-    instance_id = str(uuid.uuid4())
-    path_to_compose_file = "challenges/" + challenge
-    #copy compose file to instance folder
-    shutil.copytree(path_to_compose_file, "instances/" + instance_id)
+    try:
+        instance_id = str(uuid.uuid4())
+        path_to_compose_file = "challenges/" + challenge
+        #copy compose file to instance folder
+        shutil.copytree(path_to_compose_file, "instances/" + instance_id)
 
-    #create instance network
-    #subprocess.run(["docker", "network", "create", instance_id])
-    #generate a random unique network port for the web app
-    environment_variables = json.loads(environment_variables)
-    port = helper.get_port()
-    environment_variables["PORT"] = str(port)
-    print(environment_variables)
-    #build a response that returns instance id, challenge and all env vars
+        #create instance network
+        #subprocess.run(["docker", "network", "create", instance_id])
+        #generate a random unique network port for the web app
+        environment_variables = json.loads(environment_variables)
+        port = helper.get_port()
+        environment_variables["PORT"] = str(port)
+        print(environment_variables)
+        #build a response that returns instance id, challenge and all env vars
 
-    subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "up","-d"], env=environment_variables)
-    environment_variables["IP"] = str(socket.gethostbyname(socket.gethostname()))
-    response = {
-        "instance_id": instance_id,
-        "challenge": challenge,
-        "details": environment_variables
-    }
-    return response
+        subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "up","-d"], env=environment_variables)
+        environment_variables["IP"] = str(socket.gethostbyname(socket.gethostname()))
+        response = {
+            "instance_id": instance_id,
+            "challenge": challenge,
+            "details": environment_variables
+        }
+        return response
+    except Exception as e:
+        return {"error": e}
