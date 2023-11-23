@@ -1,5 +1,5 @@
 FROM httpd:latest
-
+ENV FLAG=${FLAG}
 WORKDIR /usr/local/apache2/htdocs
 
 COPY func.py /
