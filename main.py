@@ -45,7 +45,7 @@ app = FastAPI(lifespan=lifespan,
 async def root():
     return {"message": "Hello Hacker"}
 
-@app.post("/container",tags=['containers'])
+@app.post("/challenge",tags=['challenges'])
 async def spawn_challenge(compose_file: str, environment_variables: str | None = None):
     """
         This function can be used to spawn new containers according to a specified compose file
