@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan,
     title="CTF Citadel Infra Controller",
-    version="0.0.2",
+    version="0.0.3",
     description=description
               )
 
