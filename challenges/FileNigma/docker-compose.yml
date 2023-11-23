@@ -1,0 +1,10 @@
+version: '3'
+networks:
+
+services:
+  webserver:
+    build:
+      context: .
+      dockerfile: DOCKERFILE
+    expose:
+      - 80

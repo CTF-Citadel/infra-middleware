@@ -15,6 +15,7 @@ This Application handles container & instance creation for the CTF Citadel Platf
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     #downlaod tarball
+    yield
     async with aiohttp.ClientSession() as session:
         async with session.get(config.challenge_repo_tarball) as response:
             if response.status == 200:
@@ -44,7 +45,7 @@ async def root():
     return {"message": "Hello Hacker"}
 
 @app.post("/container",tags=['containers'])
-async def spawn_challenge(compose_file: str, environment_variables: str):
+async def spawn_challenge(compose_file: str, environment_variables: str | None = None):
     """
         This function can be used to spawn new containers according to a specified compose file
     """

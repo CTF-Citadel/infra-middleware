@@ -1,0 +1,13 @@
+FROM httpd:latest
+
+WORKDIR /usr/local/apache2/htdocs
+
+COPY func.py /
+
+RUN apt-get update && apt-get install -y python3
+
+RUN rm /usr/local/apache2/htdocs/index.html
+
+RUN python3 /func.py
+
+CMD ["httpd", "-D", "FOREGROUND"]
