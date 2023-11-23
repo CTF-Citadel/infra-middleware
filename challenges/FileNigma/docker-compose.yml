@@ -6,6 +6,6 @@ services:
       context: .
       dockerfile: DOCKERFILE
     ports:
-      - "80:80"
+      - "${PORT}:80"
     environment:
       - FLAG=${FLAG}
