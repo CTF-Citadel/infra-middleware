@@ -3,6 +3,8 @@ import random
 import string
 import uuid
 
+flag = os.environ['FLAG']
+
 # Function to generate a string with 10,000 different letters, numbers, and signs with random paragraphs
 def generate_large_random_string():
     num_chars_before_paragraph = random.randint(500, 1000)  # Adjust the range as needed
@@ -38,7 +40,7 @@ for i in range(1, 101):
 chosen_file = os.path.join(directory, random.choice([f for f in os.listdir(directory) if f.endswith('.txt')]))
 
 # Generate the content for the chosen file
-content = f'TH{{{str(uuid.uuid4())}}}\n' + generate_large_random_string()
+content = f'TH{flag}\n' + generate_large_random_string()
 
 # Write the content to a random location in the file
 with open(chosen_file, 'r') as file:
