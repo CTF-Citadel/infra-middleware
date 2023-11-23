@@ -71,3 +71,15 @@ async def container_details():
     for container in docker_client.containers.list():
         list_of_containers.append(container.id)
     return list_of_containers
+
+
+@app.get("/challenges",tags=['challenges'])
+async def challenge_list():
+    """
+        This endpoint returns a list of all challenges
+    """
+    challenges = []
+    #add all challenges from challenges/ to the list
+    for challenge in os.listdir('challenges/'):
+        challenges.append(challenge)
+    return challenges
