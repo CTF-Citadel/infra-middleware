@@ -36,4 +36,4 @@ def spawn_challenge(challenge, environment_variables=None):
         }
         return response
     except Exception as e:
-        return {"error": e}
+        return {"error": str(e)}
