@@ -64,8 +64,8 @@ async def container_details(container_id: str):
         WIP: Currently just returning the name
     """
     docker_client = docker.from_env()
-    container = docker_client.containers.get(container_id)
-    return container.name
+    container = docker_client.containers.list(filters={"name": {container_id}})
+    return [container.name,container.status]
 
 @app.get("/containers",tags=['containers'])
 async def container_details():
