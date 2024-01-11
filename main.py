@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
+from pydantic import BaseModel, Field
 import composer
 import docker
 import json
@@ -8,6 +9,7 @@ import os
 import zipfile
 from contextlib import asynccontextmanager
 import config
+from typing import Optional
 
 description = """
 This Application handles container & instance creation for the CTF Citadel Platform
@@ -45,12 +47,15 @@ app = FastAPI(lifespan=lifespan,
 async def root():
     return {"message": "Hello Hacker"}
 
-@app.post("/challenge",tags=['challenges'])
-async def spawn_challenge(compose_file: str, environment_variables: str | None = None):
+@app.post("/challenge", tags=['challenges'])
+async def spawn_challenge(
+    challenge: str = Body(..., embed=True),
+    environment_variables: Optional[str] = Body(..., embed=False)
+):
     """
-        This function can be used to spawn new containers according to a specified compose file
+    This function can be used to spawn new containers according to a specified compose file
     """
-    return composer.spawn_challenge(compose_file, environment_variables)
+    return composer.spawn_challenge(challenge, environment_variables)
 
 @app.get("/container",tags=['containers'])
 async def container_details(container_id: str):

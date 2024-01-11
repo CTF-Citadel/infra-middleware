@@ -13,6 +13,7 @@ def spawn_challenge(challenge, environment_variables=None):
     :return: output of detached compose command
     """
     try:
+        response = {"message": "error"}
         instance_id = str(uuid.uuid4())
         path_to_compose_file = "challenges/" + challenge
         #copy compose file to instance folder
@@ -24,9 +25,7 @@ def spawn_challenge(challenge, environment_variables=None):
         environment_variables = json.loads(environment_variables)
         port = helper.get_port()
         environment_variables["PORT"] = str(port)
-        print(environment_variables)
         #build a response that returns instance id, challenge and all env vars
-
         subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "up","-d"], env=environment_variables)
         environment_variables["IP"] = str(socket.gethostbyname(socket.gethostname()))
         response = {
