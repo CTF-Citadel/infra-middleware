@@ -1,0 +1,38 @@
+.slideTitle {
+    color:#fff;
+    margin: 20px;
+    margin-top: 150px;
+    font-size: 50px;
+    font-weight: 900;
+    transition: ease-in-out;
+}
+
+.slideText {
+    color: #fff;
+    margin-left: 300px;
+    margin-right: 300px;
+    font-weight: 900;
+}
+
+
+@media (max-width: 1150px) {
+    .slideText {
+        margin-left: 100px;
+        margin-right: 100px;
+    }
+
+    .slideTitle {
+        margin-top: 50px;
+    }
+}
+
+@media (max-width: 650px) {
+    .slideTitle {
+        margin-top: 50px;
+        font-size: 20px;
+    }
+    .slideText {
+        margin: 10px;
+        font-size: 15px;
+    }
+}

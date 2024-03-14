@@ -26,7 +26,10 @@ def spawn_challenge(challenge, environment_variables=None):
         port = helper.get_port()
         environment_variables["PORT"] = str(port)
         #build a response that returns instance id, challenge and all env vars
-        subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "up","-d"], env=environment_variables)
+        subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "build"], env=environment_variables)
+        subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "push"], env=environment_variables)
+        subprocess.run(["docker", "stack", "--compose-file", "instances/" + instance_id + "/docker-compose.yml", instance_id], env=environment_variables)
+
         environment_variables["IP"] = str(socket.gethostbyname(socket.gethostname()))
         response = {
             "instance_id": instance_id,

@@ -1,0 +1,13 @@
+.userprofile {
+    width: 500px;
+    height: 500px;
+}
+
+.text {
+    color: #000;
+    font-family: sans-serif;
+}
+
+.profilePage {
+    min-height: calc(100vh - 400px);
+}

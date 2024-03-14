@@ -1,0 +1,156 @@
+*{
+    padding: 0;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.navList {
+    width: 100%;
+    height: 100%;
+    list-style-type: none;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+}
+
+.navList li {
+    height: 100%;
+}
+
+li {
+    margin: 50px;
+    margin-right: 50px;
+}
+
+a, .home {
+    text-decoration: none;
+    font-size: xx-large;
+    font-weight: bold;
+    color: #bababa;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+    letter-spacing: 2px;
+    font-size: 45px;
+}
+
+.home {
+    flex: 1;
+}
+
+.centered {
+    max-width: 700px;
+    display: flex;
+    align-items: center; 
+}
+
+.navBar {
+    width: 100%;
+    height: 100px;
+    background-color: #000;
+    border-bottom: 1px solid #000;
+    display: flex;
+    align-items: center;
+}
+
+.burgerBtn {
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    left: calc(100% - 110px);
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.btnLine {
+    position: relative;
+    background-color: #fff;
+    width: 80px;
+    height: 15px;
+    left: 10%;
+    border-radius: 5px;
+}
+
+.line1 {
+    top: 20px;
+}
+
+.line2 {
+    top: 30px;
+}
+
+.line3 {
+    top: 40px;
+}
+
+@media (max-width: 850px) {
+    .navList {
+        visibility: hidden;
+    }
+
+    .burgerBtn {
+        visibility: visible;
+    }
+
+    .sliding-object {
+        left: 100%;
+    }
+}
+
+.sliding-object {
+    width: 200px;
+    height: 500px;
+    background-color: #000e;
+    position: absolute;
+    top: 100px;
+    left: 100%;
+    padding: 20px;
+    transition: left 0.3s ease;
+    z-index: 999;
+    border-bottom-left-radius: 90%;
+}
+
+.link {
+    text-decoration: none;
+    font-size: xx-large;
+    font-weight: bold;
+    color: #bababa;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+    letter-spacing: 2px;
+    font-size: 25px;
+    padding-left: -20px;
+}
+
+.loginBtn {
+    position: relative;
+    left: 40%;
+    font-size: 30px;
+    background-color: #3b82f6;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+}
+  
+.loginBtn:hover {
+    background-color: #2563eb;
+}
+
+.logoutBtn {
+    top: -50px;
+    width: 140px;
+}
+
+.profile {
+    margin-left: 50px;
+    text-decoration: none;
+    font-size: xx-large;
+    font-weight: bold;
+    color: #bababa;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+    letter-spacing: 2px;
+    font-size: 45px;
+}
+
