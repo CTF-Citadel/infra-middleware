@@ -10,4 +10,4 @@ def get_port():
     while port in used_ports:
         port = random.randint(49152, 65535)
     used_ports.append(port)
-    return port
+    return str(port)
