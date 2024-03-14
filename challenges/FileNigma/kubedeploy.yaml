@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -o kubedeploy.yaml
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: webserver
+  name: webserver
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+  selector:
+    io.kompose.service: webserver
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -o kubedeploy.yaml
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: webserver
+  name: webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: webserver
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -o kubedeploy.yaml
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/filenigma-default: "true"
+        io.kompose.service: webserver
+    spec:
+      containers:
+        - env:
+            - name: FLAG
+          image: webserver
+          name: webserver
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always
+

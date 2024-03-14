@@ -2,6 +2,7 @@ version: '3'
 
 services:
   webserver:
+    image: filenigma-webserver
     build:
       context: .
       dockerfile: DOCKERFILE
