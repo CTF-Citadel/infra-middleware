@@ -5,7 +5,7 @@ services:
     image: 10.0.0.2:5000/zipception
     build: .
     args:
-    - FLAG=${FLAG}
+      - FLAG=${FLAG}
     ports:
       - "80:5000"
     
