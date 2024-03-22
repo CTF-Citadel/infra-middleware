@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  flask:
+    image: felixslama/schagersfeet
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - FLAG=${FLAG}
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.schagersfeet.rule=Host(`schagersfeet.cluster.tophack.at`)"
+        - "traefik.http.routers.schagersfeet.entrypoints=http"
+        - "traefik.http.services.schagersfeet.loadbalancer.server.port=5000"
+networks:
+  traefik-public:
+    external: true
+
