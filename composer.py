@@ -24,6 +24,8 @@ def spawn_challenge(challenge, environment_variables=None):
         # create instance network
         # subprocess.run(["docker", "network", "create", instance_id])
         # generate a random unique network port for the web app
+        if environment_variables is None:
+            environment_variables = {}
         environment_variables = json.loads(environment_variables)
         print("oida")
         # build a response that returns instance id, challenge and all env vars

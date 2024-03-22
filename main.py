@@ -10,6 +10,7 @@ import zipfile
 from contextlib import asynccontextmanager
 import config
 from typing import Optional
+import subprocess
 
 description = """
 This Application handles container & instance creation for the CTF Citadel Platform
@@ -63,9 +64,10 @@ async def container_details(container_id: str):
         This endpoint returns infos about a specified container. Such as environment variables
         WIP: Currently just returning the name
     """
-    docker_client = docker.from_env()
-    container = docker_client.containers.list(filters={"name": {container_id}})
-    return [container.name,container.status]
+    completed_process = subprocess.run(["docker", "stack", "ps", container_id], capture_output=True)
+    output = completed_process.stdout.decode('utf-8')
+
+    return {"output": output}
 
 @app.get("/containers",tags=['containers'])
 async def container_details():
