@@ -24,7 +24,7 @@ async def lifespan(app: FastAPI):
     GITHUB_USERNAME = os.getenv("GITHUB_USERNAME")
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
     DOCKERHUB_USERNAME = os.getenv("DOCKERHUB_USERNAME")
-    DOCKERHUB_TOKEN = os.getenv("DOCKER_TOKEN")
+    DOCKERHUB_TOKEN = os.getenv("DOCKERHUB_TOKEN")
 
     # login to dockerhub
     subprocess.run(["docker", "login", "-u", DOCKERHUB_USERNAME, "-p", DOCKERHUB_TOKEN])
