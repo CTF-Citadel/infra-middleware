@@ -8,7 +8,6 @@ import asyncio
 import os
 import zipfile
 from contextlib import asynccontextmanager
-import config
 from typing import Optional
 import subprocess
 from git import Repo
@@ -48,7 +47,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan,
     title="CTF Citadel Infra Controller",
-    version="0.0.5",
+    version="0.0.6",
     description=description
               )
 

@@ -1,6 +1,0 @@
-version: '3.9'
-
-services:
-  web:
-    image: nginx:latest
-    command: ["/bin/sh", "-c", "nginx -g 'daemon off;'"]
