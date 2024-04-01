@@ -5,6 +5,7 @@ import shutil
 import json
 import helper
 import socket
+
 def spawn_challenge(challenge, environment_variables=None):
     """
     Spawn a new instance of a challenge.
@@ -16,17 +17,23 @@ def spawn_challenge(challenge, environment_variables=None):
         response = {"message": "error"}
         instance_id = str(uuid.uuid4())
         path_to_compose_file = "challenges/" + challenge
-        #copy compose file to instance folder
+        # copy compose file to instance folder
         shutil.copytree(path_to_compose_file, "instances/" + instance_id)
-
-        #create instance network
-        #subprocess.run(["docker", "network", "create", instance_id])
-        #generate a random unique network port for the web app
-        environment_variables = json.loads(environment_variables)
+        print("copied")
         port = helper.get_port()
-        environment_variables["PORT"] = str(port)
-        #build a response that returns instance id, challenge and all env vars
-        subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "up","-d"], env=environment_variables)
+        # create instance network
+        # subprocess.run(["docker", "network", "create", instance_id])
+        # generate a random unique network port for the web app
+        if environment_variables is None:
+            environment_variables = {}
+        environment_variables = json.loads(environment_variables)
+        print("oida")
+        # build a response that returns instance id, challenge and all env vars
+        environment_variables["INSTANCE_ID"] = instance_id  # Add instance_id as an environment variable
+        subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "build"], env=environment_variables)
+        subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "push"], env=environment_variables)
+        subprocess.run(["docker", "stack", "deploy", "--compose-file", "instances/" + instance_id + "/docker-compose.yml", instance_id, "--with-registry-auth"], env=environment_variables)
+
         environment_variables["IP"] = str(socket.gethostbyname(socket.gethostname()))
         response = {
             "instance_id": instance_id,

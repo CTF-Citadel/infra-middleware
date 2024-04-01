@@ -1,0 +1,14 @@
+services:
+ controller:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "5555:80"
+    environment:
+      - GITHUB_USERNAME=CTF-Citadel
+      - GITHUB_TOKEN=super_secret_token
+      - DOCKERHUB_USERNAME=ctf-citadel
+      - DOCKERHUB_TOKEN=super_secret_token

@@ -8,8 +8,11 @@ import asyncio
 import os
 import zipfile
 from contextlib import asynccontextmanager
-import config
 from typing import Optional
+import subprocess
+from git import Repo
+from pathlib import Path
+import shutil
 
 description = """
 This Application handles container & instance creation for the CTF Citadel Platform
@@ -17,35 +20,41 @@ This Application handles container & instance creation for the CTF Citadel Platf
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    #downlaod tarball
-    yield
-    async with aiohttp.ClientSession() as session:
-        async with session.get(config.challenge_repo_tarball) as response:
-            if response.status == 200:
-                with open('challenges/challenges.zip',mode='wb') as file:
-                    while True:
-                        chunk = await response.content.read(1024)
-                        if not chunk:
-                            break
-                        file.write(chunk)
-    #unzip downloaded challenges
-    with zipfile.ZipFile('challenges/challenges.zip','r') as zip_ref:
-        print("grr")
-        zip_ref.extractall('challenges/')
+    GITHUB_USERNAME = os.getenv("GITHUB_USERNAME")
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    DOCKERHUB_USERNAME = os.getenv("DOCKERHUB_USERNAME")
+    DOCKERHUB_TOKEN = os.getenv("DOCKERHUB_TOKEN")
+
+    # login to dockerhub
+    subprocess.run(["docker", "login", "-u", DOCKERHUB_USERNAME, "-p", DOCKERHUB_TOKEN])
+
+    shutil.rmtree('challenges/', ignore_errors=True)
+    Repo.clone_from(f"https://{GITHUB_USERNAME}:{GITHUB_TOKEN}@github.com/CTF-Citadel/challenges.git", 'challenges/')
+    def remove_non_directories(directory_path):
+        """
+        Removes all non-directory files from the specified directory.
+        """
+        directory = Path(directory_path)
+        for item in directory.iterdir():
+            if item.is_file():
+                item.unlink()
+
+    # Remove all non-directory files from the challenges directory. (e.g. examples, README.md, etc.)
+    remove_non_directories('challenges/')
 
     yield
 
 
 app = FastAPI(lifespan=lifespan,
     title="CTF Citadel Infra Controller",
-    version="0.0.3",
+    version="0.0.6",
     description=description
               )
 
 
 @app.get("/",tags=["misc"])
 async def root():
-    return {"message": "Hello Hacker"}
+    return {"message": "Hello Hacker, Welcome to the CTF Citadel Infra Controller! Wrong place to be if you're looking for flags though. Good luck!"}
 
 @app.post("/challenge", tags=['challenges'])
 async def spawn_challenge(
@@ -63,20 +72,21 @@ async def container_details(container_id: str):
         This endpoint returns infos about a specified container. Such as environment variables
         WIP: Currently just returning the name
     """
-    docker_client = docker.from_env()
-    container = docker_client.containers.list(filters={"name": {container_id}})
-    return [container.name,container.status]
+    completed_process = subprocess.run(["docker", "stack", "ps", container_id], capture_output=True)
+    output = completed_process.stdout.decode('utf-8')
 
-@app.get("/containers",tags=['containers'])
-async def container_details():
+    return {"output": output}
+
+@app.delete("/container",tags=['containers'])
+async def container_details(container_id: str):
     """
-        This endpoint returns a list of all containers
+        This endpoint deletes a specified container/stack.
     """
-    docker_client = docker.from_env()
-    list_of_containers = []
-    for container in docker_client.containers.list():
-        list_of_containers.append(container.id)
-    return list_of_containers
+    completed_process = subprocess.run(["docker", "stack", "rm", container_id], capture_output=True)
+    output = completed_process.stdout.decode('utf-8')
+
+    return {"output": output}
+
 
 
 @app.get("/challenges",tags=['challenges'])
