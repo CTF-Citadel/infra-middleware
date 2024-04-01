@@ -84,17 +84,6 @@ async def container_details(container_id: str):
     return {"output": output}
 
 
-@app.get("/containers",tags=['containers'])
-async def container_details():
-    """
-        This endpoint returns a list of all containers
-    """
-    docker_client = docker.from_env()
-    list_of_containers = []
-    for container in docker_client.containers.list():
-        list_of_containers.append(container.id)
-    return list_of_containers
-
 
 @app.get("/challenges",tags=['challenges'])
 async def challenge_list():

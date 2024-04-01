@@ -32,7 +32,7 @@ def spawn_challenge(challenge, environment_variables=None):
         environment_variables["INSTANCE_ID"] = instance_id  # Add instance_id as an environment variable
         subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "build"], env=environment_variables)
         subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "push"], env=environment_variables)
-        subprocess.run(["docker", "stack", "deploy", "--compose-file", "instances/" + instance_id + "/docker-compose.yml", instance_id], env=environment_variables)
+        subprocess.run(["docker", "stack", "deploy", "--compose-file", "instances/" + instance_id + "/docker-compose.yml", instance_id, "--with-registry-auth"], env=environment_variables)
 
         environment_variables["IP"] = str(socket.gethostbyname(socket.gethostname()))
         response = {
