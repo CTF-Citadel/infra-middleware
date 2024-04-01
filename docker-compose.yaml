@@ -1,4 +1,3 @@
-version: '3.8'
 services:
  controller:
     build:
@@ -7,4 +6,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - "80:80"
+      - "5555:80"
+    environment:
+      - GITHUB_USERNAME=CTF-Citadel
+      - GITHUB_TOKEN=super_secret_token
+      - DOCKERHUB_USERNAME=ctf-citadel
+      - DOCKERHUB_TOKEN=super_secret_token
