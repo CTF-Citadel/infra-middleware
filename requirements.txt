@@ -1,4 +1,4 @@
-aiohttp==3.8.6
+aiohttp==3.9.2
 docker_py==1.10.6
 fastapi==0.110.0
 Flask==3.0.2
