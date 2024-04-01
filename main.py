@@ -23,6 +23,12 @@ This Application handles container & instance creation for the CTF Citadel Platf
 async def lifespan(app: FastAPI):
     GITHUB_USERNAME = os.getenv("GITHUB_USERNAME")
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    DOCKERHUB_USERNAME = os.getenv("DOCKERHUB_USERNAME")
+    DOCKERHUB_TOKEN = os.getenv("DOCKER_TOKEN")
+
+    # login to dockerhub
+    subprocess.run(["docker", "login", "-u", DOCKERHUB_USERNAME, "-p", DOCKERHUB_TOKEN])
+
     shutil.rmtree('challenges/', ignore_errors=True)
     Repo.clone_from(f"https://{GITHUB_USERNAME}:{GITHUB_TOKEN}@github.com/CTF-Citadel/challenges.git", 'challenges/')
     def remove_non_directories(directory_path):
@@ -75,8 +81,7 @@ async def container_details(container_id: str):
 @app.delete("/container",tags=['containers'])
 async def container_details(container_id: str):
     """
-        This endpoint returns infos about a specified container. Such as environment variables
-        WIP: Currently just returning the name
+        This endpoint deletes a specified container/stack.
     """
     completed_process = subprocess.run(["docker", "stack", "rm", container_id], capture_output=True)
     output = completed_process.stdout.decode('utf-8')
