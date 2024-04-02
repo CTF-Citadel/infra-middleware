@@ -5,10 +5,26 @@ services:
       dockerfile: Dockerfile
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - "5555:80"
+    networks:
+      - traefik-public
     environment:
       - GITHUB_USERNAME=CTF-Citadel
       - GITHUB_TOKEN=super_secret_token
       - DOCKERHUB_USERNAME=ctf-citadel
       - DOCKERHUB_TOKEN=super_secret_token
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.controller.rule=Host(`cluster.tophack.at`)"
+        - "traefik.http.routers.controller.entrypoints=https"
+        - "traefik.http.routers.controller.tls=true"
+        - "traefik.http.routers.controller.tls.certresolver=le"
+        - "traefik.http.services.controller.loadbalancer.server.port=80"
+      placement:
+        constraints:
+          - "node.role==manager"
+
+networks:
+  traefik-public:
+    external: true

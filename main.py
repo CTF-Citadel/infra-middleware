@@ -1,12 +1,11 @@
 from fastapi import FastAPI, Body
 from pydantic import BaseModel, Field
 import composer
-import docker
-import json
-import aiohttp
-import asyncio
 import os
-import zipfile
+from typing import List
+from hmac import compare_digest
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from contextlib import asynccontextmanager
 from typing import Optional
 import subprocess
@@ -51,6 +50,15 @@ app = FastAPI(lifespan=lifespan,
     description=description
               )
 
+def auth(
+    token: HTTPAuthorizationCredentials = Depends(HTTPBearer(scheme_name="PSK")),
+) -> bool:
+    BEARER = token.credentials
+    PSK = os.getenv("PSK") or ""
+    if compare_digest(BEARER, PSK):
+        return True
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 @app.get("/",tags=["misc"])
 async def root():
@@ -66,7 +74,7 @@ async def spawn_challenge(
     """
     return composer.spawn_challenge(challenge, environment_variables)
 
-@app.get("/container",tags=['containers'])
+@app.get("/container",tags=['containers'], dependencies=[Depends(auth)])
 async def container_details(container_id: str):
     """
         This endpoint returns infos about a specified container. Such as environment variables

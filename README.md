@@ -1,16 +1,17 @@
 # CTF Citadale Infra Controller
 
 # Starting local instance
-```
+```bash
 pip install -r requirements.txt (maybe in an env)
 uvicorn main:app --host 0.0.0.0
 ```
 
 basically good to go.
 
-# Setup Docker Swarm
+# Setup Docker Swarm production environment
+This setup requires a Linux machine with Docker installed.
 
-Initialize Cluster:
+## Initialize Cluster:
 ```bash
 docker swarm init --advertise-addr <MANAGER-IP>
 ```
@@ -32,7 +33,9 @@ As the output suggests, you need to run the `docker swarm join --token <TOKEN>` 
 
 As by: https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/
 
-# Setup Traefik in newly created Swarm
+
+## Setup Traefik in newly created Swarm
+
 ```bash
 docker network create --driver=overlay traefik-public
 ```
@@ -45,16 +48,33 @@ docker node update --label-add traefik-public.traefik-public-certificates=true $
 ```bash
 export EMAIL=admin@tophack.at
 export DOMAIN=traefik.cluster.tophack.at
+export CONTROLLER_DOMAIN=cluster.tophack.at
 export USERNAME=admin
 export PASSWORD=changethis
 export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
 export CF_API_EMAIL=email_of_your_cf_account
 export CF_API_KEY=cloudflare_api_key
+
+export GITHUB_USERNAME=CTF-Citadel
+export GITHUB_TOKEN=super_secret_token
+export DOCKERHUB_USERNAME=ctf-citadel
+export DOCKERHUB_TOKEN=super_secret_token
+```
+```bash
+docker login -u $GITHUB_USERNAME -p $GITHUB_PASSWORD ghcr.io
+```
+Login to ghcr.io for the controller image
+```bash
+docker stack deploy -c tophack-stack.yml tophack-stack
+```
+This deploys Traefik and the infra-middleware controller to the Swarm cluster with your environment variables
+
 ```
 
 ```bash
 docker stack deploy -c traefik-v3.yml traefik
 ```
 Deploy the freshly configured Traefik to the cluster.
+
 
 As by: https://dockerswarm.rocks/traefik/
