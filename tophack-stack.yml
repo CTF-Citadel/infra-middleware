@@ -93,6 +93,29 @@ services:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
       - traefik-public
+  controller:
+    image: ghcr.io/ctf-citadel/infra-middleware:main
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - traefik-public
+    environment:
+      - GITHUB_USERNAME=${GITHUB_USERNAME?Variable not set}
+      - GITHUB_TOKEN=${GITHUB_TOKEN?Variable not set}
+      - DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME?Variable not set}
+      - DOCKERHUB_TOKEN=${DOCKERHUB_TOKEN?Variable not set}
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.controller.rule=Host(`${CONTROLLER_DOMAIN?Variable not set}`)"
+        - "traefik.http.routers.controller.entrypoints=https"
+        - "traefik.http.routers.controller.tls=true"
+        - "traefik.http.routers.controller.tls.certresolver=le"
+        - "traefik.http.services.controller.loadbalancer.server.port=80"
+      placement:
+        constraints:
+          - "node.role==manager"
 
 volumes:
   # Create a volume to store the certificates, there is a constraint to make sure
