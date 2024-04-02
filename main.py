@@ -64,7 +64,7 @@ def auth(
 async def root():
     return {"message": "Hello Hacker, Welcome to the CTF Citadel Infra Controller! Wrong place to be if you're looking for flags though. Good luck!"}
 
-@app.post("/challenge", tags=['challenges'])
+@app.post("/challenge", tags=['challenges'], dependencies=[Depends(auth)])
 async def spawn_challenge(
     challenge: str = Body(..., embed=True),
     environment_variables: Optional[str] = Body(..., embed=False)
@@ -85,7 +85,7 @@ async def container_details(container_id: str):
 
     return {"output": output}
 
-@app.delete("/container",tags=['containers'])
+@app.delete("/container",tags=['containers'], dependencies=[Depends(auth)])
 async def container_details(container_id: str):
     """
         This endpoint deletes a specified container/stack.
@@ -97,7 +97,7 @@ async def container_details(container_id: str):
 
 
 
-@app.get("/challenges",tags=['challenges'])
+@app.get("/challenges",tags=['challenges'], dependencies=[Depends(auth)])
 async def challenge_list():
     """
         This endpoint returns a list of all challenges
