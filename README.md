@@ -33,7 +33,9 @@ As the output suggests, you need to run the `docker swarm join --token <TOKEN>` 
 
 As by: https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/
 
+
 ## Setup Traefik in newly created Swarm
+
 ```bash
 docker network create --driver=overlay traefik-public
 ```
@@ -52,6 +54,7 @@ export PASSWORD=changethis
 export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
 export CF_API_EMAIL=email_of_your_cf_account
 export CF_API_KEY=cloudflare_api_key
+
 export GITHUB_USERNAME=CTF-Citadel
 export GITHUB_TOKEN=super_secret_token
 export DOCKERHUB_USERNAME=ctf-citadel
@@ -65,5 +68,13 @@ Login to ghcr.io for the controller image
 docker stack deploy -c tophack-stack.yml tophack-stack
 ```
 This deploys Traefik and the infra-middleware controller to the Swarm cluster with your environment variables
+
+```
+
+```bash
+docker stack deploy -c traefik-v3.yml traefik
+```
+Deploy the freshly configured Traefik to the cluster.
+
 
 As by: https://dockerswarm.rocks/traefik/
