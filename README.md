@@ -54,27 +54,20 @@ export PASSWORD=changethis
 export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
 export CF_API_EMAIL=email_of_your_cf_account
 export CF_API_KEY=cloudflare_api_key
-
 export GITHUB_USERNAME=CTF-Citadel
 export GITHUB_TOKEN=super_secret_token
 export DOCKERHUB_USERNAME=ctf-citadel
 export DOCKERHUB_TOKEN=super_secret_token
+export PSK=Trombone-Droop9-Falsify-Superbowl-Overload
 ```
 ```bash
-docker login -u $GITHUB_USERNAME -p $GITHUB_PASSWORD ghcr.io
+docker login -u $GITHUB_USERNAME -p $GITHUB_TOKEN ghcr.io
 ```
 Login to ghcr.io for the controller image
 ```bash
 docker stack deploy -c tophack-stack.yml tophack-stack
 ```
 This deploys Traefik and the infra-middleware controller to the Swarm cluster with your environment variables
-
-```
-
-```bash
-docker stack deploy -c traefik-v3.yml traefik
-```
-Deploy the freshly configured Traefik to the cluster.
 
 
 As by: https://dockerswarm.rocks/traefik/
