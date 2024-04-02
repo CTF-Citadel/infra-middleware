@@ -146,14 +146,9 @@ services:
       placement:
         constraints: [node.role == manager]
 
-networks:
-  agent_network:
-    driver: overlay
-    attachable: true
 
 volumes:
   portainer_data:
-volumes:
   # Create a volume to store the certificates, there is a constraint to make sure
   # Traefik is always deployed to the same Docker node with the same volume containing
   # the HTTPS certificates
@@ -164,3 +159,6 @@ networks:
   # services that need to be publicly available via this Traefik
   traefik-public:
     external: true
+  agent_network:
+    driver: overlay
+    attachable: true
