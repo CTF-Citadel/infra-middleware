@@ -12,6 +12,7 @@ import subprocess
 from git import Repo
 from pathlib import Path
 import shutil
+import asyncio
 
 description = """
 This Application handles container & instance creation for the CTF Citadel Platform
@@ -72,7 +73,7 @@ async def spawn_challenge(
     """
     This function can be used to spawn new containers according to a specified compose file
     """
-    return composer.spawn_challenge(challenge, environment_variables)
+    return await composer.spawn_challenge(challenge, environment_variables)
 
 @app.get("/container",tags=['containers'], dependencies=[Depends(auth)])
 async def container_details(container_id: str):
