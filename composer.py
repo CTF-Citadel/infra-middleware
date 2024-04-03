@@ -5,14 +5,9 @@ import shutil
 import json
 import helper
 import socket
+import asyncio
 
 async def spawn_challenge(challenge, environment_variables=None):
-    """
-    Spawn a new instance of a challenge.
-    :param challenge: provide the name of the docker-compose file for the challenge"
-    :param environment_variables: provide the environment variables for the docker-compose file as dictionary.
-    :return: output of detached compose command
-    """
     try:
         response = {"message": "error"}
         instance_id = str(uuid.uuid4())
@@ -22,17 +17,17 @@ async def spawn_challenge(challenge, environment_variables=None):
         shutil.copytree(path_to_compose_file, "instances/" + instance_id)
         port = helper.get_port()
         # create instance network
-        # subprocess.run(["docker", "network", "create", instance_id])
+        # await asyncio.create_subprocess_exec(["docker", "network", "create", instance_id])
         # generate a random unique network port for the web app
         if environment_variables is None:
             environment_variables = {}
         environment_variables = json.loads(environment_variables)
         # build a response that returns instance id, challenge and all env vars
-        environment_variables["INSTANCE_ID"] = instance_id  # Add instance_id as an environment variable
+        environment_variables["INSTANCE_ID"] = instance_id # Add instance_id as an environment variable
         print(f"{instance_id} - {challenge} - {environment_variables} - building")
-        subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "build"], env=environment_variables)
-        subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "push"], env=environment_variables)
-        subprocess.run(["docker", "stack", "deploy", "--compose-file", "instances/" + instance_id + "/docker-compose.yml", instance_id, "--with-registry-auth"], env=environment_variables)
+        await asyncio.create_subprocess_exec(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "build"], env=environment_variables)
+        await asyncio.create_subprocess_exec(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "push"], env=environment_variables)
+        await asyncio.create_subprocess_exec(["docker", "stack", "deploy", "--compose-file", "instances/" + instance_id + "/docker-compose.yml", instance_id, "--with-registry-auth"], env=environment_variables)
 
         environment_variables["IP"] = str(socket.gethostbyname(socket.gethostname()))
         response = {
