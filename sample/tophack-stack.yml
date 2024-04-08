@@ -106,7 +106,7 @@ services:
       - DOCKERHUB_TOKEN=${DOCKERHUB_TOKEN?Variable not set}
       - PSK=${PSK?Variable not set}
     deploy:
-      replicas: 1
+      replicas: ${CONTROLLER_REPLICACOUNT?1}
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.controller.rule=Host(`${CONTROLLER_DOMAIN?Variable not set}`)"

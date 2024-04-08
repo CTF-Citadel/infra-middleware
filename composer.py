@@ -3,31 +3,28 @@ import uuid
 import os
 import shutil
 import json
-import helper
 import socket
 
 async def spawn_challenge(challenge, environment_variables=None):
     """
     Spawn a new instance of a challenge.
-    :param challenge: provide the name of the docker-compose file for the challenge"
-    :param environment_variables: provide the environment variables for the docker-compose file as dictionary.
+
+    :param challenge: provide the name of the docker-compose file for the challenge
+    :param environment_variables: provide the environment variables for the docker-compose file as a dictionary
     :return: output of detached compose command
     """
     try:
-        response = {"message": "error"}
         instance_id = str(uuid.uuid4())
         print(f"{instance_id} - {challenge} - {environment_variables} - started")
         path_to_compose_file = "challenges/" + challenge
         # copy compose file to instance folder
         shutil.copytree(path_to_compose_file, "instances/" + instance_id)
-        port = helper.get_port()
-        # create instance network
-        # subprocess.run(["docker", "network", "create", instance_id])
-        # generate a random unique network port for the web app
+        
         if environment_variables is None:
             environment_variables = {}
         environment_variables = json.loads(environment_variables)
-        # build a response that returns instance id, challenge and all env vars
+        
+        # build a response that returns instance id, challenge, and all env vars
         environment_variables["INSTANCE_ID"] = instance_id  # Add instance_id as an environment variable
         print(f"{instance_id} - {challenge} - {environment_variables} - building")
         subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "build"], env=environment_variables)

@@ -37,7 +37,7 @@ As by: https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/
 ## Setup Traefik in newly created Swarm
 
 ```bash
-docker network create --driver=overlay traefik-public
+docker network create --driver=overlay --subnet=10.1.0.0/16 traefik-public
 ```
 ```bash
 export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
