@@ -7,12 +7,40 @@ import subprocess
 from git import Repo
 from pathlib import Path
 import os
+import asyncio
 
 description = """
 This Application handles container & instance creation for the CTF Citadel Platform
 """
 
-app = FastAPI(
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    GITHUB_USERNAME = os.getenv("GITHUB_USERNAME")
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    DOCKERHUB_USERNAME = os.getenv("DOCKERHUB_USERNAME")
+    DOCKERHUB_TOKEN = os.getenv("DOCKERHUB_TOKEN")
+
+    # login to dockerhub
+    subprocess.run(["docker", "login", "-u", DOCKERHUB_USERNAME, "-p", DOCKERHUB_TOKEN])
+
+    shutil.rmtree('challenges/', ignore_errors=True)
+    Repo.clone_from(f"https://{GITHUB_USERNAME}:{GITHUB_TOKEN}@github.com/CTF-Citadel/challenges.git", 'challenges/')
+    def remove_non_directories(directory_path):
+        """
+        Removes all non-directory files from the specified directory.
+        """
+        directory = Path(directory_path)
+        for item in directory.iterdir():
+            if item.is_file():
+                item.unlink()
+
+    # Remove all non-directory files from the challenges directory. (e.g. examples, README.md, etc.)
+    remove_non_directories('challenges/')
+
+    yield
+
+
+app = FastAPI(lifespan=lifespan,
     title="CTF Citadel Infra Controller",
     version="0.0.6",
     description=description
