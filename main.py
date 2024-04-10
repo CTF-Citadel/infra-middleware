@@ -6,6 +6,7 @@ from typing import Optional
 import subprocess
 from git import Repo
 from pathlib import Path
+import os
 
 description = """
 This Application handles container & instance creation for the CTF Citadel Platform
