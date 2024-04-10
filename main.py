@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Body, Depends, HTTPException, status
+import shutil
 from pydantic import BaseModel
 from hmac import compare_digest
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -7,7 +8,7 @@ import subprocess
 from git import Repo
 from pathlib import Path
 import os
-import shutil
+import composer
 from contextlib import asynccontextmanager
 
 description = """
@@ -69,13 +70,15 @@ async def spawn_challenge(
     """
     This function can be used to spawn new containers according to a specified compose file
     """
-    return {"message": "Spawn challenge"}
+    return await composer.spawn_challenge(challenge, environment_variables)
 
 @app.delete("/container", tags=['containers'], dependencies=[Depends(auth)])
 async def delete_container(container_id: str):
     """
     This endpoint deletes a specified container/stack.
     """
+    completed_process = subprocess.run(["docker", "stack", "rm", container_id], capture_output=True)
+    output = completed_process.stdout.decode('utf-8')
     return {"message": f"Deleted container {container_id}"}
 
 @app.get("/challenges", tags=['challenges'], dependencies=[Depends(auth)])
