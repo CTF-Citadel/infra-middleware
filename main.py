@@ -77,8 +77,8 @@ async def delete_container(container_id: str):
     This endpoint deletes a specified container/stack.
     """
     completed_process = subprocess.run(["docker", "stack", "rm", container_id], capture_output=True)
-    output = completed_process.stdout.decode('utf-8')
-    return {"message": f"Deleted container {container_id}"}
+    code = completed_process.returncode
+    return {"message": f"Deleted container {container_id} (Exit Code: {code})"}
 
 @app.get("/challenges", tags=['challenges'], dependencies=[Depends(auth)])
 async def challenge_list():
