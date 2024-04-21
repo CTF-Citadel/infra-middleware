@@ -1,7 +1,7 @@
-name: Build and Publish Latest Image
+name: Build and Publish Testing Image
 
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
 
 env:
@@ -32,7 +32,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: type=raw,latest
+          tags: |
+            type=raw,testing
+            type=ref,event=pr
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v5

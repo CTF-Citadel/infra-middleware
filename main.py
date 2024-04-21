@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Body, Depends, HTTPException, status
 import shutil
-from pydantic import BaseModel
 from hmac import compare_digest
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional

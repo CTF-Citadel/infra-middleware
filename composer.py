@@ -1,6 +1,5 @@
 import subprocess
 import uuid
-import os
 import shutil
 import json
 import socket
