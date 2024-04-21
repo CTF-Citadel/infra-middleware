@@ -5,7 +5,7 @@
 Just run
 
 ```bash
-pip install -r requirements.txt (maybe in an env)
+pip install -r requirements.txt # python -m venv env && source env/bin/activate
 uvicorn main:app --host 0.0.0.0
 ```
 
