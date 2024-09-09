@@ -30,7 +30,7 @@ async def spawn_challenge(challenge, environment_variables=None):
         subprocess.run(["docker-compose", "-f", "instances/" + instance_id + "/docker-compose.yml", "push"], env=environment_variables)
         subprocess.run(["docker", "stack", "deploy", "--compose-file", "instances/" + instance_id + "/docker-compose.yml", instance_id, "--with-registry-auth"], env=environment_variables)
 
-        environment_variables["IP"] = str(socket.gethostbyname(socket.gethostname()))
+        environment_variables["IP"] = socket.gethostbyname(socket.gethostname())
         response = {
             "instance_id": instance_id,
             "challenge": challenge,
