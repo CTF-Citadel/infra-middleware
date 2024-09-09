@@ -39,6 +39,6 @@ async def spawn_challenge(challenge, environment_variables=None):
         print(f"{instance_id} - {challenge} - {environment_variables} - done")
         return response
     except Exception as e:
-        error = {"error": str(e)}
+        error = {"error": repr(e)}
         print(f"{instance_id} - {challenge} - {environment_variables} - error - {error}")
         return error
